@@ -1,1 +1,1 @@
-web: gunicorn daily_dashboard.wsgi --log-file -
+web: gunicorn daily_dashboard.wsgi --timeout 120

@@ -78,13 +78,27 @@ WSGI_APPLICATION = 'daily_dashboard.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+# settings.py
+import dj_database_url
+import os
 
+# ... other settings ...
+
+DATABASES = {
+    # Railway ke DATABASE_URL ko yahan paste karein.
+    # Behtar tareeka hai ki isey environment variable mein rakhein,
+    # lekin abhi ke liye direct paste kar sakte hain.
+    'default': dj_database_url.config(
+        default='postgresql://postgres:GaVNEuDQGfKWXZizGBYHsfRdDnZzLAmB@nozomi.proxy.rlwy.net:10633/railway', 
+        conn_max_age=600
+    )
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
