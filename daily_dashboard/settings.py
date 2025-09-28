@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'fitness.apps.FitnessConfig',
     'profiles.apps.ProfilesConfig',
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -90,6 +92,10 @@ import dj_database_url
 import os
 
 # ... other settings ...
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('dcqzx2jxv'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),}
 
 DATABASES = {
     # Railway ke DATABASE_URL ko yahan paste karein.
@@ -147,3 +153,4 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'daily_dashboard_index'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
