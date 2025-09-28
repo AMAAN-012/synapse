@@ -1,0 +1,47 @@
+{% extends 'fitness/fitness_base.html' %}
+
+{% block title %}Community Users{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <h1 class="text-4xl font-bold text-white mb-8 text-center">Community Members</h1>
+
+    <div class="space-y-4">
+        {% for user_item in users %}
+            <div class="bg-slate-800 p-4 rounded-lg shadow-lg flex items-center justify-between transition-transform transform hover:scale-105 hover:shadow-lime-500/10">
+                
+                <a href="{% url 'profiles:profile_view' user_item.username %}" class="flex items-center space-x-4 group">
+                    <div class="w-14 h-14 rounded-full bg-slate-700 overflow-hidden flex-shrink-0 border-2 border-slate-600">
+                        {% if user_item.profile.image and user_item.profile.image.url %}
+                            <img src="{{ user_item.profile.image.url }}" alt="{{ user_item.username }}'s profile picture" class="w-full h-full object-cover">
+                        {% else %}
+                            <div class="w-full h-full flex items-center justify-center">
+                                <span class="text-xl font-bold text-lime-400">{{ user_item.username|first|upper }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <p class="font-semibold text-white text-lg group-hover:text-lime-400 transition-colors">{{ user_item.username }}</p>
+                        <p class="text-sm text-slate-400">Joined: {{ user_item.date_joined|date:"F Y" }}</p>
+                    </div>
+                </a>
+                
+                <div>
+                    <form action="{% url 'profiles:toggle_follow' user_item.username %}" method="post">
+                        {% csrf_token %}
+                        {% if user_item in following_list %}
+                            <button type="submit" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-colors">Unfollow</button>
+                        {% else %}
+                            <button type="submit" class="bg-lime-500 hover:bg-lime-600 text-slate-900 font-semibold py-2 px-4 rounded-lg text-sm transition-colors">Follow</button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        {% empty %}
+            <div class="bg-slate-800 p-8 rounded-lg text-center">
+                <p class="text-slate-400">No other users found in the community yet.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

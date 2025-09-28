@@ -1,0 +1,35 @@
+{% extends 'fitness/fitness_base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<h1 class="text-4xl font-bold text-white mb-6">Edit Your Profile</h1>
+
+<form method="post" enctype="multipart/form-data" class="bg-slate-800 p-8 rounded-lg shadow-lg space-y-6">
+    {% csrf_token %}
+
+    {% for field in form %}
+    <div class="flex flex-col">
+        <label for="{{ field.id_for_label }}" class="mb-2 font-semibold text-slate-300">{{ field.label }}</label>
+        
+        {% if field.name == 'image' %}
+            <p class="text-slate-400 text-sm mb-2">Current: <a href="{{ user.profile.image.url }}" target="_blank" class="text-lime-400">View Image</a></p>
+            {{ field|add_class:"block w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-lime-500 file:text-slate-900 hover:file:bg-lime-600" }}
+        {% else %}
+            {% render_field field class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-lime-500 focus:border-lime-500 block w-full p-2.5" rows="4" %}
+        {% endif %}
+        
+        {% if field.help_text %}
+        <small class="text-slate-400 mt-1">{{ field.help_text }}</small>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    <div>
+        <button type="submit" class="w-full bg-lime-500 hover:bg-lime-600 text-slate-900 font-bold py-3 px-4 rounded-lg shadow-md transition duration-300">
+            Save Changes
+        </button>
+    </div>
+</form>
+{% endblock %}

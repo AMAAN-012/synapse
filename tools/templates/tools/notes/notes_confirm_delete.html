@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Note - {{ note.title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto">
+    <div class="bg-gray-800 border-2 border-gray-700 rounded-xl shadow-2xl p-6 md:p-8 text-center">
+        
+        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 mb-4">
+            <svg class="h-8 w-8 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+        </div>
+        
+        <h1 class="text-2xl font-bold text-white mb-2">Confirm Deletion</h1>
+        <p class="text-gray-300 mb-4">
+            Are you sure you want to permanently delete the note titled:
+            <br>
+            <strong class="text-lg text-white mt-1 block">"{{ note.title }}"</strong>?
+        </p>
+        <p class="text-red-400 font-semibold mb-8">This action cannot be undone.</p>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="flex justify-center items-center space-x-4">
+                
+                <a href="{% url 'notes:notes_detail' note.pk %}" 
+                   class="w-full bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition-all duration-300">
+                    Cancel
+                </a>
+
+                <button type="submit" 
+                        class="w-full bg-red-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-red-500/20">
+                    Yes, Delete It
+                </button>
+
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

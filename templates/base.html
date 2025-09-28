@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Synapse{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+<body class="bg-gray-900 text-gray-200 font-sans leading-normal tracking-normal">
+
+    <nav class="bg-gray-900/70 backdrop-blur-lg border-b border-white/10 sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            
+            <a href="{% url 'daily_dashboard_index' %}" class="text-3xl font-extrabold text-purple-400 hover:text-purple-300 transition-colors duration-300">
+                Synapse
+            </a>
+
+            {% if user.is_authenticated %}
+            <div class="hidden md:flex items-center space-x-2">
+                <a href="{% url 'tools:notes_list' %}" class="text-gray-300 hover:bg-white/10 hover:text-white font-medium py-2 px-3 rounded-lg transition-all duration-200">Notes</a>
+                <a href="{% url 'tools:quote_of_the_day' %}" class="text-gray-300 hover:bg-white/10 hover:text-white font-medium py-2 px-3 rounded-lg transition-all duration-200">Quotes</a>
+                <a href="{% url 'fitness:workout_list' %}" class="text-gray-300 hover:bg-white/10 hover:text-white font-medium py-2 px-3 rounded-lg transition-all duration-200">Fitness</a>
+            </div>
+            {% endif %}
+
+            <div class="flex items-center space-x-4">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'profiles:profile_view' user.username %}" class="text-gray-300 hover:text-white font-medium transition-colors duration-200">
+                        My Profile
+                    </a>
+                    <form action="{% url 'logout' %}" method="post" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-white/10 text-white font-medium py-2 px-4 rounded-lg hover:bg-red-500/50 transition-all duration-300">
+                            Logout
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-gray-300 hover:bg-white/10 hover:text-white font-medium py-2 px-3 rounded-lg transition-all duration-200">Login</a>
+                    <a href="{% url 'register' %}" class="bg-purple-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors duration-300">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto mt-8 p-4">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

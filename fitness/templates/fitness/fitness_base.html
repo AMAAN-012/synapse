@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Fitness Tracker{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200">
+
+    <nav class="bg-slate-800 shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <div>
+                        <a href="{% url 'fitness:workout_list' %}" class="flex items-center py-5 px-2 text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-1 text-lime-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            <span class="font-bold text-lg">FitTrack</span>
+                        </a>
+                    </div>
+                    <div class="hidden md:flex items-center space-x-1">
+                        <a href="{% url 'daily_dashboard_index' %}" class="py-5 px-3 text-slate-300 hover:text-lime-400 transition duration-300">Dashboard</a>
+                        <a href="{% url 'fitness:workout_list' %}" class="py-5 px-3 text-slate-300 hover:text-lime-400 transition duration-300">Workouts</a>
+                        <a href="{% url 'profiles:activity_feed' %}" class="py-5 px-3 text-slate-300 hover:text-lime-400 transition duration-300">Feed</a>
+                        <a href="{% url 'profiles:user_list' %}" class="py-5 px-3 text-slate-300 hover:text-lime-400 transition duration-300">Community</a>
+                        <a href="{% url 'fitness:progress_view' %}" class="py-5 px-3 text-slate-300 hover:text-lime-400 transition duration-300">My Progress</a>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-3">
+                    <a href="{% url 'profiles:profile_view' user.username %}" class="py-2 px-2 font-medium text-slate-300 rounded hover:text-lime-400 transition duration-300">Welcome, {{ user.username }}</a>
+                </div>
+
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="outline-none">
+                        <svg class=" w-6 h-6 text-gray-500 hover:text-lime-400 "
+                            fill="none"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="{% url 'daily_dashboard_index' %}" class="block py-2 px-4 text-sm hover:bg-slate-700">Dashboard</a>
+            <a href="{% url 'fitness:workout_list' %}" class="block py-2 px-4 text-sm hover:bg-slate-700">Workouts</a>
+            <a href="{% url 'profiles:activity_feed' %}" class="block py-2 px-4 text-sm hover:bg-slate-700">Feed</a>
+            <a href="{% url 'profiles:user_list' %}" class="block py-2 px-4 text-sm hover:bg-slate-700">Community</a>
+            <a href="{% url 'fitness:progress_view' %}" class="block py-2 px-4 text-sm hover:bg-slate-700">My Progress</a>
+            <hr class="border-slate-700 my-1">
+            <a href="{% url 'profiles:profile_view' user.username %}" class="block py-2 px-4 text-sm font-semibold hover:bg-slate-700">My Profile ({{ user.username }})</a>
+        </div>
+    </nav>
+    
+    {% if messages %}
+        <div class="max-w-4xl mx-auto px-4">
+            {% for message in messages %}
+                <div class="mt-4 bg-lime-500 text-slate-900 p-3 rounded-lg text-center font-semibold">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+
+</body>
+</html>

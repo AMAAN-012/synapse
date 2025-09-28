@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Sign Up for Synapse{% endblock %}
+
+{% block content %}
+<div class="fixed inset-0 -z-10 bg-gradient-to-br from-gray-900 via-gray-800 to-black animate-gradient-shift"></div>
+
+<div class="flex items-center justify-center min-h-[90vh] p-4">
+    <div class="relative p-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500 rounded-2xl animate-gradient-spin">
+        
+        <div class="bg-gray-800 shadow-xl rounded-xl p-8 max-w-md w-full">
+            <h1 class="text-3xl font-bold text-white mb-2 text-center">Create Your Account 🚀</h1>
+            <p class="text-center text-gray-400 mb-8">Join the community and start your journey.</p>
+            
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        {% if field.name == 'username' %}
+                            <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>
+                        {% elif field.name == 'email' %}
+                            <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" /><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" /></svg>
+                        {% else %}
+                            <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L4.257 19.58A2 2 0 112.42 17.58l8.486-6.84A6 6 0 0118 8zm-6-3a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /></svg>
+                        {% endif %}
+                    </div>
+                    {% render_field field class="w-full p-3 pl-10 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200" placeholder=field.label %}
+                </div>
+                {% for error in field.errors %}
+                    <p class="text-xs text-red-500 -mt-4 text-center">{{ error }}</p>
+                {% endfor %}
+                {% endfor %}
+
+                <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:from-indigo-600 hover:to-purple-700 transition-transform duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-purple-300">
+                    Create Account
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <p class="text-gray-400 text-sm">Already have an account? <a href="{% url 'login' %}" class="text-purple-500 font-semibold hover:underline">Log in here</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes gradient-shift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    .animate-gradient-shift {
+        background-size: 200% 200%;
+        animation: gradient-shift 15s ease infinite;
+    }
+    
+
+</style>
+{% endblock %}

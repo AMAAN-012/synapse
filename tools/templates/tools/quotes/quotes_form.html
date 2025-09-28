@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Submit a Quote{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-[80vh] p-4">
+    <div class="bg-gray-800 shadow-2xl rounded-xl p-8 max-w-xl w-full">
+        <h1 class="text-3xl font-bold text-white mb-6 text-center">Submit a New Quote 📝</h1>
+        <p class="text-center text-gray-400 mb-8">Share an inspiring quote for the community.</p>
+        
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-4">
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">{{ field.label }}</label>
+                {{ field|add_class:"w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200" }}
+                {% for error in field.errors %}
+                    <p class="mt-1 text-sm text-red-400">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-700 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:from-purple-700 hover:to-indigo-800 transition-transform duration-300 transform hover:scale-105">
+                Submit Quote
+            </button>
+        </form>
+        
+        <div class="mt-6 text-center">
+            <a href="{% url 'tools:quote_of_the_day' %}" class="text-gray-400 hover:text-gray-200 transition-colors duration-200">
+                &larr; Back to Quote of the Day
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
