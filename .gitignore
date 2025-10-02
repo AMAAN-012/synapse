@@ -1,0 +1,28 @@
+ 
+# --- Secrets ---
+# Ignore the file containing our secret API keys and database passwords.
+.env
+
+# --- Python / Django specific ---
+# Ignore the Python cache folder.
+__pycache__/
+
+# Ignore the default SQLite database.
+db.sqlite3
+
+# Ignore files related to virtual environments
+.venv/
+venv/
+env/
+
+# --- Static and Media files ---
+# If you run collectstatic, you don't want to commit the result.
+/staticfiles/
+# Don't commit user-uploaded files.
+/media/
+
+
+# --- Editor/OS specific files ---
+# VS Code
+.vscode/
+
