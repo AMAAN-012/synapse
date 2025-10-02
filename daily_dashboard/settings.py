@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 import dj_database_url
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,13 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',         
     'django.contrib.staticfiles',
+    'cloudinary',                
     'tools.apps.ToolsConfig',
     'widget_tweaks',
     'fitness.apps.FitnessConfig',
     'profiles.apps.ProfilesConfig',
-    'cloudinary_storage',
-    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -76,31 +79,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'daily_dashboard.wsgi.application'
+\
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-# settings.py
-import dj_database_url
-import os
-
-
-# CLOUDINARY_STORAGE = {
-#     'CLOUD_NAME': os.getenv('dcqzx2jxv'),
-#     'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
-#     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),}
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUD_NAME'),
+    'API_KEY': os.getenv('API_KEY'),
+    'API_SECRET': os.getenv('API_SECRET'),
+}
 
 DATABASES = {
-    # Railway ke DATABASE_URL ko yahan paste karein.
-    # Behtar tareeka hai ki isey environment variable mein rakhein,
-    # lekin abhi ke liye direct paste kar sakte hain.
     'default': dj_database_url.config(
         default='postgresql://postgres:GaVNEuDQGfKWXZizGBYHsfRdDnZzLAmB@nozomi.proxy.rlwy.net:10633/railway', 
         conn_max_age=600
