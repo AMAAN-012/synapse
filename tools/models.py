@@ -15,7 +15,7 @@ class AdvancedNote(models.Model):
     order = models.IntegerField(default=0)
     audio_recording = models.FileField(upload_to='notes_audio/', blank=True, null=True)
     shareable_link = models.URLField(blank=True, null=True)
-    checklist = models.JSONField(default=list, blank=True)  # [{"task":"Example","done":False}]
+    checklist = models.JSONField(default=list, blank=True) 
     
     def generate_share_link(self):
         token = uuid.uuid4()
@@ -26,15 +26,11 @@ class AdvancedNote(models.Model):
     def __str__(self):
         return self.title
 
-# Optional: Version history
+
 class NoteHistory(models.Model):
     note = models.ForeignKey(AdvancedNote, on_delete=models.CASCADE, related_name='history')
     content = models.TextField()
     updated_at = models.DateTimeField(auto_now_add=True)
-
-
-
-# Existing models (AdvancedNote, NoteHistory, Goal, Milestone) will be here...
 
 class Quote(models.Model):
     text = models.TextField()

@@ -28,7 +28,7 @@ class Activity(models.Model):
 
     class Meta:
         ordering = ['-timestamp']
-        verbose_name_plural = "Activities" # Good practice for models ending in 'y'
+        verbose_name_plural = "Activities" 
 
     def __str__(self):
         return f'{self.user.username}: {self.content[:50]}'

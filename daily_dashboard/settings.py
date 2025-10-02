@@ -92,10 +92,10 @@ import dj_database_url
 import os
 
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('dcqzx2jxv'),
-    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),}
+# CLOUDINARY_STORAGE = {
+#     'CLOUD_NAME': os.getenv('dcqzx2jxv'),
+#     'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+#     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),}
 
 DATABASES = {
     # Railway ke DATABASE_URL ko yahan paste karein.

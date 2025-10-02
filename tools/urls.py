@@ -1,10 +1,8 @@
 from django.urls import path
 from . import views 
-# Set app name for namespacing
 app_name = 'tools'
 
 urlpatterns = [
-    # Notes app URLs...
     path('notes/', views.NotesListView.as_view(), name='notes_list'),
     path('notes/create/', views.NotesCreateView.as_view(), name='notes_create'),
     path('notes/<int:pk>/', views.NotesDetailView.as_view(), name='notes_detail'),

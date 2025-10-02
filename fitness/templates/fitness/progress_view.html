@@ -46,9 +46,6 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // =================================================================
-    // 1. IMPROVED LINE CHART
-    // =================================================================
     const lineCtx = document.getElementById('volumeLineChart');
     if (lineCtx) {
         const lineLabels = {{ line_labels|safe }};
@@ -56,8 +53,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Creating a gradient fill for a premium look
         const gradient = lineCtx.getContext('2d').createLinearGradient(0, 0, 0, 300);
-        gradient.addColorStop(0, 'rgba(163, 230, 53, 0.5)'); // Lime-400 with opacity
-        gradient.addColorStop(1, 'rgba(163, 230, 53, 0)');   // Transparent
+        gradient.addColorStop(0, 'rgba(163, 230, 53, 0.5)'); 
+        gradient.addColorStop(1, 'rgba(163, 230, 53, 0)');   
 
         new Chart(lineCtx, {
             type: 'line',
@@ -66,10 +63,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 datasets: [{
                     label: 'Total Volume (kg)',
                     data: lineData,
-                    backgroundColor: gradient, // Use gradient fill
-                    borderColor: '#a3e635',    // lime-400
+                    backgroundColor: gradient, 
+                    borderColor: '#a3e635',   
                     borderWidth: 3,
-                    tension: 0.4, // Makes the line smoother
+                    tension: 0.4,
                     fill: true,
                     pointBackgroundColor: '#a3e635',
                     pointBorderColor: '#fff',
@@ -86,15 +83,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     x: { grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#94a3b8' } }
                 },
                 plugins: {
-                    legend: { display: false } // Hide legend as it's self-explanatory
+                    legend: { display: false }
                 }
             }
         });
     }
 
-    // =================================================================
-    // 2. NEW DOUGHNUT CHART
-    // =================================================================
     const doughnutCtx = document.getElementById('exerciseDoughnutChart');
     if (doughnutCtx) {
         const doughnutLabels = {{ doughnut_labels|safe }};
@@ -107,15 +101,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 datasets: [{
                     label: 'Volume (kg)',
                     data: doughnutData,
-                    backgroundColor: [ // Professional color palette
-                        '#a3e635', // lime-400
-                        '#4f46e5', // indigo-600
-                        '#db2777', // pink-600
-                        '#f97316', // orange-500
-                        '#0891b2', // cyan-600
-                        '#d946ef'  // fuchsia-500
+                    backgroundColor: [ 
+                        '#a3e635', 
+                        '#4f46e5', 
+                        '#db2777', 
+                        '#f97316', 
+                        '#0891b2', 
+                        '#d946ef'  
                     ],
-                    borderColor: '#1e293b', // slate-800, for separation
+                    borderColor: '#1e293b',
                     borderWidth: 2,
                     hoverOffset: 10
                 }]
@@ -127,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     legend: {
                         position: 'bottom',
                         labels: {
-                            color: '#94a3b8', // slate-400
+                            color: '#94a3b8', 
                             padding: 15,
                             font: { size: 12 }
                         }

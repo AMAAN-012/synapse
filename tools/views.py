@@ -81,10 +81,7 @@ def quote_of_the_day(request):
         daily_quote_text = "API mein ek error hua."
         author_name = "System"
     
-    # Get approved quotes for the community section
     submitted_quotes_list = Quote.objects.filter(is_approved=True)
-
-    # Get my own submitted quotes (unapproved) for a personalized section
     unapproved_quotes = []
     if request.user.is_authenticated:
         unapproved_quotes = Quote.objects.filter(created_by=request.user, is_approved=False)
@@ -116,7 +113,6 @@ class QuoteUpdateView(LoginRequiredMixin, UpdateView):
         # Sirf quote ke owner ko hi update karne ki permission de
         return Quote.objects.filter(created_by=self.request.user)
 
-# Add a blank line here to separate the classes
 
 class QuoteDeleteView(LoginRequiredMixin, DeleteView):
     model = Quote

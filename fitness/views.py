@@ -1,10 +1,7 @@
-# fitness/views.py
-
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import WorkoutForm
 from .models import Workout
-# 👇 1. ADD FloatField TO THIS IMPORT
 from django.db.models import Sum, F, Value, FloatField
 from django.db.models.functions import Coalesce
 from collections import defaultdict
@@ -14,8 +11,6 @@ import json
 @login_required
 def workout_list(request):
     workouts = Workout.objects.filter(user=request.user).order_by('-date')
-
-    # --- START: STREAK CALCULATION LOGIC ---
     streak_count = 0
     today = date.today()
     
@@ -29,8 +24,6 @@ def workout_list(request):
                     streak_count += 1
                 else:
                     break
-    
-    # --- END: STREAK CALCULATION LOGIC ---
 
     context = {
         'workouts': workouts,
@@ -54,7 +47,6 @@ def add_workout(request):
 
 @login_required
 def progress_view(request):
-    # --- Data for Line Chart (Total Volume Over Time) ---
     workouts = Workout.objects.filter(user=request.user).order_by('date')
     
     daily_volumes = defaultdict(float)
@@ -64,8 +56,7 @@ def progress_view(request):
 
     line_chart_labels = list(daily_volumes.keys())
     line_chart_data = list(daily_volumes.values())
-
-    # --- Data for Doughnut Chart (Volume per Exercise) ---
+    
     exercise_data = Workout.objects.filter(user=request.user)\
         .values('exercise_name')\
         .annotate(
