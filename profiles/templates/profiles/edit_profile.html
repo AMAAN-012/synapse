@@ -4,32 +4,65 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block content %}
-<h1 class="text-4xl font-bold text-white mb-6">Edit Your Profile</h1>
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-3xl sm:text-4xl font-bold text-white mb-6 text-center">Edit Your Profile</h1>
 
-<form method="post" enctype="multipart/form-data" class="bg-slate-800 p-8 rounded-lg shadow-lg space-y-6">
-    {% csrf_token %}
+    <form method="post" enctype="multipart/form-data" class="bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-xl space-y-8">
+        {% csrf_token %}
 
-    {% for field in form %}
-    <div class="flex flex-col">
-        <label for="{{ field.id_for_label }}" class="mb-2 font-semibold text-slate-300">{{ field.label }}</label>
+        <div>
+            <label class="block mb-3 font-semibold text-slate-300">Profile Picture</label>
+            <div class="flex items-center space-x-6">
+                <div class="shrink-0">
+                    <img id="imagePreview" class="h-20 w-20 object-cover rounded-full border-2 border-slate-700" 
+                         src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}https://res.cloudinary.com/dcqzx2jxv/image/upload/v1759420959/default_profile_pic_td40nc.jpg{% endif %}" 
+                         alt="Current profile photo" />
+                </div>
+                <label class="block">
+                    <span class="sr-only">Choose profile photo</span>
+                    {{ form.image|add_class:"block w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-lime-500 file:text-slate-900 hover:file:bg-lime-600 cursor-pointer" }}
+                </label>
+            </div>
+             {% if form.image.help_text %}
+                <small class="text-slate-400 mt-2 block">{{ form.image.help_text }}</small>
+            {% endif %}
+        </div>
+
+        <div>
+            <label for="{{ form.bio.id_for_label }}" class="block mb-2 font-semibold text-slate-300">{{ form.bio.label }}</label>
+            {% render_field form.bio class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-lime-500 block w-full p-2.5 transition" rows="4" placeholder="Tell us something about yourself..." %}
+            {% if form.bio.help_text %}
+                <small class="text-slate-400 mt-2 block">{{ form.bio.help_text }}</small>
+            {% endif %}
+        </div>
         
-        {% if field.name == 'image' %}
-            <p class="text-slate-400 text-sm mb-2">Current: <a href="{{ user.profile.image.url }}" target="_blank" class="text-lime-400">View Image</a></p>
-            {{ field|add_class:"block w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-lime-500 file:text-slate-900 hover:file:bg-lime-600" }}
-        {% else %}
-            {% render_field field class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-lime-500 focus:border-lime-500 block w-full p-2.5" rows="4" %}
-        {% endif %}
-        
-        {% if field.help_text %}
-        <small class="text-slate-400 mt-1">{{ field.help_text }}</small>
-        {% endif %}
-    </div>
-    {% endfor %}
+        <div class="pt-4">
+            <button type="submit" class="w-full bg-lime-500 hover:bg-lime-600 text-slate-900 font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out flex items-center justify-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>Save Changes</span>
+            </button>
+        </div>
+    </form>
+</div>
 
-    <div>
-        <button type="submit" class="w-full bg-lime-500 hover:bg-lime-600 text-slate-900 font-bold py-3 px-4 rounded-lg shadow-md transition duration-300">
-            Save Changes
-        </button>
-    </div>
-</form>
+<script>
+    // Get the file input element and the image preview element
+    const imageInput = document.getElementById('{{ form.image.id_for_label }}');
+    const imagePreview = document.getElementById('imagePreview');
+
+    // Add an event listener to the file input
+    imageInput.addEventListener('change', function(event) {
+        // Get the selected file
+        const file = event.target.files[0];
+
+        // If a file is selected
+        if (file) {
+            // Create a URL for the selected file and update the preview image src
+            imagePreview.src = URL.createObjectURL(file);
+        }
+    });
+</script>
+
 {% endblock %}
