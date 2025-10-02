@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-()2561z0^715#*^ck%gt%!^e#x11j(+$(!p7!h&l%9jedflg61
 DEBUG = False
 
 ALLOWED_HOSTS = ['192.168.29.183', '127.0.0.1', 'localhost','*',]
-CSRF_TRUSTED_ORIGINS = ['https://web-production-db222.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://synapse-db222.up.railway.app']
 
 
 # Application definition
@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'daily_dashboard.wsgi.application'
 import dj_database_url
 import os
 
-# ... other settings ...
+
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.getenv('dcqzx2jxv'),
     'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
