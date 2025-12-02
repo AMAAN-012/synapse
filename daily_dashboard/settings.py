@@ -31,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('DJANGO_SECRET_KEY')
 DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default='').split(',')
-CSRF_TRUSTED_ORIGINS = ['https://synapse-db222.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://daily-dashboard-app.onrender.com']
 
 
 # Application definition
