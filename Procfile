@@ -1,1 +1,1 @@
-web: gunicorn daily_dashboard.wsgi --timeout 120
+web: gunicorn **daily_dashboard.wsgi:application** --bind 0.0.0.0:$PORT
