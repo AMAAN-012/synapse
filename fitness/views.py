@@ -1,12 +1,17 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import WorkoutForm
-from .models import Workout
-from django.db.models import Sum, F, Value, FloatField
+# 👇 Updated Imports: Added BodyMeasurementForm and BodyMeasurement model
+from .forms import WorkoutForm, BodyMeasurementForm
+from .models import Workout, BodyMeasurement
+from django.db.models import Sum, F, Value, FloatField, Count, Max
 from django.db.models.functions import Coalesce
 from collections import defaultdict
 from datetime import date, timedelta
 import json
+
+# ==========================================
+# EXISTING VIEWS (No Changes Made)
+# ==========================================
 
 @login_required
 def workout_list(request):
@@ -47,29 +52,37 @@ def add_workout(request):
 
 @login_required
 def progress_view(request):
-    workouts = Workout.objects.filter(user=request.user).order_by('date')
+    # ---------------------------------------------------------
+    # LOGIC 1: STRENGTH TREND (Line Chart)
+    # ---------------------------------------------------------
+    strength_workouts = Workout.objects.filter(
+        user=request.user, 
+        weight_kg__gt=0
+    ).order_by('date')
     
-    daily_volumes = defaultdict(float)
-    for workout in workouts:
-        volume = (workout.sets or 0) * (workout.reps or 0) * (workout.weight_kg or 0)
-        daily_volumes[workout.date.strftime('%b %d')] += volume
+    strength_progress = defaultdict(float)
+    
+    for workout in strength_workouts:
+        # Calculate Est. 1 Rep Max
+        one_rm = workout.weight_kg * (1 + (workout.reps / 30))
+        date_str = workout.date.strftime('%b %d')
+        
+        if one_rm > strength_progress[date_str]:
+            strength_progress[date_str] = round(one_rm, 2)
 
-    line_chart_labels = list(daily_volumes.keys())
-    line_chart_data = list(daily_volumes.values())
+    line_chart_labels = list(strength_progress.keys())
+    line_chart_data = list(strength_progress.values())
     
+    # ---------------------------------------------------------
+    # LOGIC 2: EXERCISE FREQUENCY (Doughnut Chart)
+    # ---------------------------------------------------------
     exercise_data = Workout.objects.filter(user=request.user)\
         .values('exercise_name')\
-        .annotate(
-            total_volume=Sum(
-                F('sets') * F('reps') * Coalesce(F('weight_kg'), Value(0)),
-                # 👇 2. ADD THIS output_field ARGUMENT
-                output_field=FloatField()
-            )
-        )\
-        .order_by('-total_volume')
+        .annotate(total_count=Count('id'))\
+        .order_by('-total_count')[:5]
 
     doughnut_labels = [item['exercise_name'] for item in exercise_data]
-    doughnut_data = [item['total_volume'] for item in exercise_data]
+    doughnut_data = [item['total_count'] for item in exercise_data]
 
     context = {
         'line_labels': json.dumps(line_chart_labels),
@@ -79,3 +92,37 @@ def progress_view(request):
     }
 
     return render(request, 'fitness/progress_view.html', context)
+
+
+# ==========================================
+# NEW VIEW ADDED BELOW
+# ==========================================
+
+@login_required
+def measurements_view(request):
+    """
+    Handles displaying the history of body measurements
+    and saving new measurement entries.
+    """
+    # 1. Logic to save new data (POST request)
+    if request.method == 'POST':
+        form = BodyMeasurementForm(request.POST)
+        if form.is_valid():
+            measurement = form.save(commit=False)
+            measurement.user = request.user  # Attach current user
+            measurement.save()
+            return redirect('fitness:measurements') # Redirect to same page (prevents resubmission)
+    else:
+        # GET request: Show empty form
+        form = BodyMeasurementForm()
+
+    # 2. Logic to fetch history (GET request)
+    # Fetch data for this user only
+    history = BodyMeasurement.objects.filter(user=request.user).order_by('-date')
+
+    context = {
+        'form': form,
+        'history': history
+    }
+    
+    return render(request, 'fitness/measurements.html', context)

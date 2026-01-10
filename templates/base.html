@@ -5,46 +5,124 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Synapse{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    </head>
-<body class="bg-gray-900 text-gray-200 font-sans leading-normal tracking-normal">
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <nav class="bg-gray-900/70 backdrop-blur-lg border-b border-white/10 sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center p-4">
-            
-            <a href="{% url 'daily_dashboard_index' %}" class="text-3xl font-extrabold text-purple-400 hover:text-purple-300 transition-colors duration-300">
-                Synapse
-            </a>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        synapse: {
+                            dark: '#020617', // Slate 950 (Richer Dark)
+                            purple: '#8b5cf6', 
+                            glow: '#a78bfa',
+                        }
+                    },
+                    boxShadow: {
+                        'neon': '0 0 20px rgba(139, 92, 246, 0.15)', // Custom Glow
+                    }
+                }
+            }
+        }
+    </script>
+</head>
 
-            {% if user.is_authenticated %}
-            <div class="hidden md:flex items-center space-x-2">
-                <a href="{% url 'tools:notes_list' %}" class="text-gray-300 hover:bg-white/10 hover:text-white font-medium py-2 px-3 rounded-lg transition-all duration-200">Notes</a>
-                <a href="{% url 'tools:quote_of_the_day' %}" class="text-gray-300 hover:bg-white/10 hover:text-white font-medium py-2 px-3 rounded-lg transition-all duration-200">Quotes</a>
-                <a href="{% url 'fitness:workout_list' %}" class="text-gray-300 hover:bg-white/10 hover:text-white font-medium py-2 px-3 rounded-lg transition-all duration-200">Fitness</a>
-            </div>
-            {% endif %}
+<body class="bg-gradient-to-br from-gray-900 via-slate-900 to-slate-950 text-slate-300 font-sans leading-relaxed min-h-screen flex flex-col antialiased selection:bg-purple-500 selection:text-white">
 
-            <div class="flex items-center space-x-4">
+    <nav x-data="{ mobileMenuOpen: false }" class="fixed w-full z-50 top-0 transition-all duration-300 bg-slate-950/80 backdrop-blur-md border-b border-white/5 shadow-lg shadow-violet-500/5">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center h-20"> <a href="{% url 'daily_dashboard_index' %}" class="relative group">
+                    <span class="font-heading text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 transition-all duration-300 group-hover:to-indigo-400">
+                        Synapse
+                    </span>
+                    <span class="absolute -inset-1 rounded-lg bg-purple-500/20 blur opacity-0 group-hover:opacity-100 transition duration-500"></span>
+                </a>
+
                 {% if user.is_authenticated %}
-                    <a href="{% url 'profiles:profile_view' user.username %}" class="text-gray-300 hover:text-white font-medium transition-colors duration-200">
-                        My Profile
-                    </a>
-                    <form action="{% url 'logout' %}" method="post" class="inline">
+                <div class="hidden md:flex items-center gap-1 bg-white/5 p-1 rounded-full border border-white/5">
+                    <a href="{% url 'tools:notes_list' %}" class="px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:bg-white/10 hover:text-white text-gray-400 hover:shadow-[0_0_15px_rgba(167,139,250,0.3)]">Notes</a>
+                    <a href="{% url 'tools:quote_of_the_day' %}" class="px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:bg-white/10 hover:text-white text-gray-400 hover:shadow-[0_0_15px_rgba(167,139,250,0.3)]">Quotes</a>
+                    <a href="{% url 'fitness:workout_list' %}" class="px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:bg-white/10 hover:text-white text-gray-400 hover:shadow-[0_0_15px_rgba(167,139,250,0.3)]">Fitness</a>
+                </div>
+                {% endif %}
+
+                <div class="hidden md:flex items-center gap-4">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'profiles:profile_view' user.username %}" class="text-sm font-medium text-gray-400 hover:text-purple-400 transition-colors">
+                            {{ user.username }}
+                        </a>
+                        
+                        <form action="{% url 'logout' %}" method="post" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="relative px-5 py-2.5 rounded-xl font-medium text-white group overflow-hidden bg-white/5 border border-white/10 hover:border-red-500/30 transition-all">
+                                <span class="absolute inset-0 w-full h-full bg-gradient-to-br from-red-600/20 to-pink-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                                <span class="relative group-hover:text-red-400 transition-colors">Logout</span>
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-gray-400 hover:text-white font-medium transition-colors">Login</a>
+                        <a href="{% url 'register' %}" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-medium shadow-lg shadow-violet-900/20 hover:shadow-violet-700/40 hover:scale-[1.02] transition-all duration-300">
+                            Get Started
+                        </a>
+                    {% endif %}
+                </div>
+
+                <div class="md:hidden flex items-center">
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-gray-300 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-colors">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            <path x-show="mobileMenuOpen" x-cloak stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div x-show="mobileMenuOpen" x-transition.opacity.duration.300ms class="md:hidden bg-slate-950 border-t border-white/5 backdrop-blur-xl">
+            <div class="px-4 pt-4 pb-6 space-y-2">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'tools:notes_list' %}" class="block px-4 py-3 rounded-lg text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/5">Notes</a>
+                    <a href="{% url 'fitness:workout_list' %}" class="block px-4 py-3 rounded-lg text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/5">Fitness</a>
+                    <a href="{% url 'profiles:profile_view' user.username %}" class="block px-4 py-3 rounded-lg text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/5">My Profile</a>
+                    
+                    <form action="{% url 'logout' %}" method="post" class="block w-full mt-4">
                         {% csrf_token %}
-                        <button type="submit" class="bg-white/10 text-white font-medium py-2 px-4 rounded-lg hover:bg-red-500/50 transition-all duration-300">
-                            Logout
-                        </button>
+                        <button type="submit" class="w-full text-left px-4 py-3 rounded-lg text-red-400 bg-red-500/5 hover:bg-red-500/10 border border-red-500/10 transition-all">Logout</button>
                     </form>
                 {% else %}
-                    <a href="{% url 'login' %}" class="text-gray-300 hover:bg-white/10 hover:text-white font-medium py-2 px-3 rounded-lg transition-all duration-200">Login</a>
-                    <a href="{% url 'register' %}" class="bg-purple-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors duration-300">Register</a>
+                    <a href="{% url 'login' %}" class="block px-4 py-3 text-center text-gray-300 bg-white/5 rounded-lg mb-3">Login</a>
+                    <a href="{% url 'register' %}" class="block px-4 py-3 text-center text-white bg-gradient-to-r from-violet-600 to-indigo-600 rounded-lg shadow-lg shadow-violet-900/20">Register Now</a>
                 {% endif %}
             </div>
         </div>
     </nav>
 
-    <main class="container mx-auto mt-8 p-4">
-        {% block content %}{% endblock %}
+    <main class="flex-grow container mx-auto mt-6 px-4 pt-28 pb-12">
+        {% block content %}
+        {% endblock %}
     </main>
+
+    <footer class="relative border-t border-white/5 py-8 mt-auto bg-slate-950">
+        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-20 bg-purple-900/20 blur-[100px] pointer-events-none"></div>
+
+        <div class="container mx-auto text-center relative z-10">
+            <p class="text-gray-500 text-sm font-medium tracking-wide">
+                &copy; {% now "Y" %} <span class="text-gray-400">Synapse Dashboard</span>. Crafted for productivity.
+            </p>
+        </div>
+    </footer>
+
 </body>
 </html>

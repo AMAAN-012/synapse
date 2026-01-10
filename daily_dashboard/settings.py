@@ -10,10 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
+
 from pathlib import Path
 import dj_database_url
 from dotenv import load_dotenv
-from decouple import config
+import cloudinary
+import cloudinary.uploader
+# from decouple import config
 
 
 load_dotenv()
@@ -28,25 +31,31 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 
 # SECURITY WARNING: don't run with debug turned on in production!
-SECRET_KEY = config('DJANGO_SECRET_KEY')
-DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default='').split(',')
-CSRF_TRUSTED_ORIGINS = ['https://daily-dashboard-app.onrender.com']
+SECRET_KEY = SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-fallback-key')
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS =['http://127.0.0.1', 'http://localhost']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-'django.contrib.admin',
+    # --- Default Django Apps ---
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',         
-    'django.contrib.staticfiles',
-    'cloudinary',                
+
+    # --- Third Party Apps (Order Matters!) ---
+    'cloudinary_storage',           # Ye hamesha 'staticfiles' se PEHLE aana chahiye
+    'django.contrib.staticfiles',   # Default static handler
+    'cloudinary',                   # Cloudinary ka main SDK
+
+    'widget_tweaks',                # Form styling ke liye
+
+    # --- Your Custom Apps ---
     'tools.apps.ToolsConfig',
-    'widget_tweaks',
     'fitness.apps.FitnessConfig',
     'profiles.apps.ProfilesConfig',
 ]
@@ -90,7 +99,7 @@ CLOUDINARY_STORAGE = {
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://postgres:GaVNEuDQGfKWXZizGBYHsfRdDnZzLAmB@nozomi.proxy.rlwy.net:10633/railway', 
+        default='sqlite:///db.sqlite3',
         conn_max_age=600
     )
 }
@@ -130,6 +139,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
@@ -138,7 +148,12 @@ STATICFILES_DIRS = [
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'daily_dashboard_index'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'), 
+    'API_KEY':    os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+

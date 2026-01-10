@@ -9,49 +9,49 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
         <div class="bg-slate-800 p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold text-white mb-4">Total Volume Over Time (kg)</h2>
-            {% if line_labels|length > 2 %}
+            <h2 class="text-2xl font-bold text-white mb-4">Max Strength Progress (Est. 1RM)</h2>
+            {% if line_labels|length > 1 %}
                 <div class="relative h-80">
                     <canvas id="volumeLineChart"></canvas>
                 </div>
             {% else %}
                 <div class="text-center text-slate-400 py-10">
-                    <p>Log workouts on at least two different days to see your progress trend.</p>
+                    <p>Log heavy lifts on at least two different days to see your strength trend.</p>
                 </div>
             {% endif %}
         </div>
 
         <div class="bg-slate-800 p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold text-white mb-4">Exercise Volume Distribution</h2>
+            <h2 class="text-2xl font-bold text-white mb-4">Most Frequent Exercises</h2>
             {% if doughnut_labels|length > 0 %}
                 <div class="relative h-80">
                     <canvas id="exerciseDoughnutChart"></canvas>
                 </div>
             {% else %}
                 <div class="text-center text-slate-400 py-10">
-                    <p>No workout data available to show distribution.</p>
+                    <p>No workout data available to show frequency.</p>
                 </div>
             {% endif %}
         </div>
     </div>
     
-    {% if line_labels|length < 3 %}
     <div class="text-center pt-4">
         <a href="{% url 'fitness:add_workout' %}" class="mt-4 inline-block bg-lime-500 hover:bg-lime-600 text-slate-900 font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105">
             Log a Workout
         </a>
     </div>
-    {% endif %}
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // --- 1. STRENGTH LINE CHART CONFIG ---
     const lineCtx = document.getElementById('volumeLineChart');
     if (lineCtx) {
+        // Data from Django Views
         const lineLabels = {{ line_labels|safe }};
         const lineData = {{ line_data|safe }};
 
-        // Creating a gradient fill for a premium look
+        // Cinematic Gradient (Lime Green to Transparent)
         const gradient = lineCtx.getContext('2d').createLinearGradient(0, 0, 0, 300);
         gradient.addColorStop(0, 'rgba(163, 230, 53, 0.5)'); 
         gradient.addColorStop(1, 'rgba(163, 230, 53, 0)');   
@@ -61,12 +61,12 @@ document.addEventListener('DOMContentLoaded', function () {
             data: {
                 labels: lineLabels,
                 datasets: [{
-                    label: 'Total Volume (kg)',
+                    label: 'Est. 1 Rep Max (kg)', // <--- UPDATED LABEL
                     data: lineData,
                     backgroundColor: gradient, 
                     borderColor: '#a3e635',   
                     borderWidth: 3,
-                    tension: 0.4,
+                    tension: 0.4, // Smooth Curve
                     fill: true,
                     pointBackgroundColor: '#a3e635',
                     pointBorderColor: '#fff',
@@ -79,16 +79,39 @@ document.addEventListener('DOMContentLoaded', function () {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#94a3b8' } },
-                    x: { grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#94a3b8' } }
+                    y: { 
+                        beginAtZero: false, // Strength 0 se start nahi hoti usually
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }, 
+                        ticks: { color: '#94a3b8' },
+                        title: {
+                            display: true,
+                            text: 'Weight (kg)',
+                            color: '#64748b'
+                        }
+                    },
+                    x: { 
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }, 
+                        ticks: { color: '#94a3b8' } 
+                    }
                 },
                 plugins: {
-                    legend: { display: false }
+                    legend: { 
+                        display: true, // Legend ON kiya taaki label dikhe
+                        labels: { color: '#fff' }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + ' kg'; // Tooltip unit
+                            }
+                        }
+                    }
                 }
             }
         });
     }
 
+    // --- 2. FREQUENCY DOUGHNUT CHART CONFIG ---
     const doughnutCtx = document.getElementById('exerciseDoughnutChart');
     if (doughnutCtx) {
         const doughnutLabels = {{ doughnut_labels|safe }};
@@ -99,17 +122,17 @@ document.addEventListener('DOMContentLoaded', function () {
             data: {
                 labels: doughnutLabels,
                 datasets: [{
-                    label: 'Volume (kg)',
+                    label: 'Sessions Logged', // <--- UPDATED LABEL
                     data: doughnutData,
                     backgroundColor: [ 
-                        '#a3e635', 
-                        '#4f46e5', 
-                        '#db2777', 
-                        '#f97316', 
-                        '#0891b2', 
-                        '#d946ef'  
+                        '#a3e635', // Lime
+                        '#3b82f6', // Blue
+                        '#f43f5e', // Rose
+                        '#f59e0b', // Amber
+                        '#06b6d4', // Cyan
+                        '#d946ef'  // Fuchsia
                     ],
-                    borderColor: '#1e293b',
+                    borderColor: '#1e293b', // Match background color
                     borderWidth: 2,
                     hoverOffset: 10
                 }]
