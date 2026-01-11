@@ -101,3 +101,8 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # --- FORCE UPDATE TRIGGER V5 ---
 # Ye comment zaroori hai taaki Git changes pakad sake.
+# Login hone ke baad user ko Homepage ('/') par bhejo
+LOGIN_REDIRECT_URL = '/'
+
+# (Optional) Agar kabhi jabardasti login page par jana pade
+LOGIN_URL = 'login'
