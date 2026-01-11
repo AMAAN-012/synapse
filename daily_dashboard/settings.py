@@ -31,10 +31,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 
 # SECURITY WARNING: don't run with debug turned on in production!
-SECRET_KEY = SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-fallback-key')
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-fallback-key')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS =['http://127.0.0.1', 'http://localhost']
+CSRF_TRUSTED_ORIGINS =['https://*.onrender.com', 'http://127.0.0.1', 'http://localhost']
 
 
 # Application definition
@@ -89,13 +89,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'daily_dashboard.wsgi.application'
-\
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('CLOUD_NAME'),
-    'API_KEY': os.getenv('API_KEY'),
-    'API_SECRET': os.getenv('API_SECRET'),
-}
+
+
 
 DATABASES = {
     'default': dj_database_url.config(
